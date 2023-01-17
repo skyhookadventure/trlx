@@ -1,6 +1,10 @@
-from transformers import AutoTokenizer
+from pathlib import Path
 
-from soft_optim.fine_tune import create_dataset
+import pytest
+from transformers import AutoModelForCausalLM, AutoTokenizer
+
+from soft_optim.fine_tune import create_dataset, infer_game
+from soft_optim.game_generator import evaluate_game_string
 
 
 class TestCreateDataset:
@@ -20,4 +24,40 @@ class TestCreateDataset:
         input_ids = first_example["input_ids"]
         labels = first_example["labels"]
         assert input_ids == labels
+
+
+class TestCheckModelOutputsValidGame:
+    
+    
+    def test_plain_gpt(self):
+        # Load standard GPT2 (not fine tuned)
+        model_name = "gpt2"
+        model = AutoModelForCausalLM.from_pretrained(model_name)
+        tokenizer = AutoTokenizer.from_pretrained(model_name)
+        
+        # Infer the full game
+        full_game:str = infer_game(model, tokenizer)
+        
+        # Check it throws an error
+        with pytest.raises(Exception) as exc_info:
+            evaluate_game_string(full_game)
+
+        assert exc_info
+        
+    
+    def test_fine_tuned_gpt(self):
+        # Load the fine-tuned model
+        model_name = "gpt2"
+        current_dir = Path(__file__).parent
+        checkpoint_dir = current_dir.parent.parent / ".checkpoints" / "final"
+        tokenizer = AutoTokenizer.from_pretrained(model_name)
+        model = AutoModelForCausalLM.from_pretrained(checkpoint_dir)
+        
+        # Infer the game
+        full_game:str = infer_game(model, tokenizer)
+        
+        # Check it is valid
+        res = evaluate_game_string(full_game)
+        assert type(res) == int
+        
         
