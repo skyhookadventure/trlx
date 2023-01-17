@@ -36,9 +36,10 @@ def main(model_name: str = "gpt2") -> None:
     
     This is so that our model reliably outputs allowed game moves.
     """
-    # Create the tokenized dataset
+    # Create tokenized datasets (train and eval)
     tokenizer = AutoTokenizer.from_pretrained(model_name)
-    dataset = create_dataset(tokenizer)
+    train_dataset = create_dataset(tokenizer, 50000)
+    eval_dataset = create_dataset(tokenizer, 50)
    
     # Initialise Weights & Biases
     wandb.login()
@@ -51,10 +52,11 @@ def main(model_name: str = "gpt2") -> None:
     trainer = Trainer(
         model=model,
         args=training_args,
-        train_dataset=dataset,
+        train_dataset=train_dataset,
+        eval_dataset=eval_dataset
     )
     trainer.train()
-
+    
     # Save the final state dictionary
 
 if __name__ == "__main__":
