@@ -4,7 +4,7 @@ from typing import List
 
 class BoardState:
     """ A class to represent the state of a tic tac toe game """
-    def __init__(self):
+    def __init__(self, string=None):
         self.blank = 0
         self.x = 1
         self.o = 2
@@ -12,6 +12,10 @@ class BoardState:
         self.o_str = 'o'
         self.board_state = self.blank*np.ones((3,3))
         self.map = {self.x:'x', self.o:'o', self.blank: '-'}
+
+        # if a string is passed, parse it
+        if string is not None:
+            self.parse_str(string)
 
     def get_valid_moves(self):
         ''' return a list of valid (i,j,player) moves '''
@@ -63,8 +67,9 @@ class BoardState:
                 won = True
 
             if won:
-                print(f"Player {player} wins!")
-
+                return player
+            
+        return False
 
     def __str__(self):
         b = self.board_state
@@ -78,17 +83,32 @@ class BoardState:
 
 
     def parse_str(self, string):
-        print(string)
-        lines = string.split("\n")
-        # check if valid string
+        lines = string.strip("\n").split("\n")
+        # create a dict that does the opposite of self.map
+        rev_map = {v:k for k,v in self.map.items()}
         if len(lines) != 3:
             print("Invalid string")
-        for line in lines:
+        
+        # iterate over it and convert to state
+        for i, line in enumerate(lines):
             if len(line) != 6:
-                print("Invalid string")
-            l = line.split(" ")
-            print(l)
-        # convert string to state
+                print("Invalid string1")
+            l = line.strip(" ").split(" ")
+            for j, char in enumerate(l):
+                self.board_state[i,j] = rev_map[char]
+
+
+def evaluate_game_string(game_string):
+    # split game string into board states
+    game_states = game_string.split("\n\n")[1:]
+    for state in game_states:
+        b = BoardState(state)
+        outcome = b.check_win()
+        if outcome == b.x:
+            return 1
+        if outcome == b.o:
+            return -1            
+    return 0
 
 
 def generate_random_game():
@@ -111,12 +131,10 @@ def generate_dataset(number_games: int) -> List:
     return games
 
 if __name__ == "__main__":
+    # TEST
     # Generate a game
     game = generate_random_game()
     print(game)
 
-    # split game string into board states
-    game_states = game.split("\n\n")
-    b = BoardState()
-    b.parse_str(game_states[-1])
-    print(b)
+    # Evaluate the game
+    print(evaluate_game_string(game))
