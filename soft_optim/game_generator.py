@@ -95,7 +95,7 @@ def generate_random_game():
     return "Let's play Tic Tac Toe:\n" + "\n".join(game_state_history)
 
 
-def generate_games(number_games: int) -> List[str]:
+def generate_dataset(number_games: int) -> List[str]:
     """Generate a list of games
 
     Args:
@@ -105,4 +105,14 @@ def generate_games(number_games: int) -> List[str]:
         List: List of games (strings with a full game)
     """
     return [ generate_random_game() for _ in range(number_games) ]
-    
+
+if __name__ == "__main__":
+    # Generate a game
+    game = generate_random_game()
+    print(game)
+
+    # split game string into board states
+    game_states = game.split("\n\n")
+    b = BoardState()
+    b.parse_str(game_states[-1])
+    print(b)

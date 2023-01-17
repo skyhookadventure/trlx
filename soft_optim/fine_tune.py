@@ -3,7 +3,7 @@ from datasets import Dataset
 from transformers import (AutoModelForCausalLM, AutoTokenizer, Trainer,
                           TrainingArguments)
 
-from soft_optim.game_generator import generate_games
+from soft_optim.game_generator import generate_dataset
 
 
 def create_dataset(tokenizer: AutoTokenizer, number_games: int = 10) -> Dataset:
@@ -19,7 +19,7 @@ def create_dataset(tokenizer: AutoTokenizer, number_games: int = 10) -> Dataset:
         Dataset: Full game prompts dataset
     """
     # Create the dataset from a list of game strings
-    list_of_game_strings = generate_games(number_games)
+    list_of_game_strings = generate_dataset(number_games)
     dataset = Dataset.from_dict({"text":list_of_game_strings})
     
     # Tokenize the text prompts (creates "input_ids" property for each dataset item)
