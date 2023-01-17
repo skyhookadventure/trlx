@@ -38,7 +38,7 @@ def main(model_name: str = "gpt2") -> None:
     """
     # Create tokenized datasets (train and eval)
     tokenizer = AutoTokenizer.from_pretrained(model_name)
-    train_dataset = create_dataset(tokenizer, 50000)
+    train_dataset = create_dataset(tokenizer, 5000)
     eval_dataset = create_dataset(tokenizer, 50)
    
     # Initialise Weights & Biases
@@ -46,7 +46,11 @@ def main(model_name: str = "gpt2") -> None:
 
     # Create the model
     model = AutoModelForCausalLM.from_pretrained(model_name)
-    training_args = TrainingArguments(output_dir=".checkpoints", evaluation_strategy="epoch")
+    training_args = TrainingArguments(
+        output_dir=".checkpoints", 
+        evaluation_strategy="epoch",
+        num_train_epochs=1,
+    )
     
     # Fine tune
     trainer = Trainer(
@@ -56,7 +60,11 @@ def main(model_name: str = "gpt2") -> None:
         eval_dataset=eval_dataset
     )
     trainer.train()
-    
+
+    # print model output
+    out = model.generate(max_length=1000, do_sample=True)
+    print(tokenizer.decode(out[0], skip_special_tokens=True))
+
     # Save the final state dictionary
 
 if __name__ == "__main__":
