@@ -78,9 +78,17 @@ class BoardState:
 
 
     def parse_str(self, string):
+        print(string)
+        lines = string.split("\n")
         # check if valid string
+        if len(lines) != 3:
+            print("Invalid string")
+        for line in lines:
+            if len(line) != 6:
+                print("Invalid string")
+            l = line.split(" ")
+            print(l)
         # convert string to state
-        raise NotImplementedError
 
 
 def generate_random_game():
@@ -101,4 +109,14 @@ def generate_dataset(number_games: int) -> List:
     # Create the list of game strings
     games: List[str] = generate_n_games(number_games)
     return games
-    
+
+if __name__ == "__main__":
+    # Generate a game
+    game = generate_random_game()
+    print(game)
+
+    # split game string into board states
+    game_states = game.split("\n\n")
+    b = BoardState()
+    b.parse_str(game_states[-1])
+    print(b)
