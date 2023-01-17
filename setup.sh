@@ -1,18 +1,21 @@
 # Personal git config settings
-if [ $1 = '-j' ]
+if [ -z "$1" ]
 then
-  git config --global user.name "Jeremy Gillen"
-  git config --global user.email "jez.gillen@gmail.com"
-fi
-if [ $1 = '-n' ]
-then
-  git config --global user.name "Nicky Pochinkov"
-  git config --global user.email "work@nicky.pro"
-fi
-if [ $1 = '-a' ]
-then
-  git config --global user.name "Alan Cooney"
-  git config --global user.email "alancooney@gmail.com"
+  if [ $1 = '-j' ]
+  then
+    git config --global user.name "Jeremy Gillen"
+    git config --global user.email "jez.gillen@gmail.com"
+  fi
+  if [ $1 = '-n' ]
+  then
+    git config --global user.name "Nicky Pochinkov"
+    git config --global user.email "work@nicky.pro"
+  fi
+  if [ $1 = '-a' ]
+  then
+    git config --global user.name "Alan Cooney"
+    git config --global user.email "alancooney@gmail.com"
+  fi
 fi
 
 # Dependencies (using Poetry rather than pip)

@@ -1,0 +1,12 @@
+# Python
+.venv/
+__pycache__/
+
+# Tests
+.pytest_cache/
+
+# Checkpoints
+.checkpoints/
+
+# Weights and biases
+wandb/
